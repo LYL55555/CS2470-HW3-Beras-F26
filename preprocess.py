@@ -17,4 +17,16 @@ def load_and_preprocess_data() -> tuple[Tensor, Tensor, Tensor, Tensor]:
 
 
     ## TODO: Convert all of the data into Tensors (constructor in core.py)
+    train_inputs = train_inputs.reshape(-1, 28 * 28)
+    test_inputs = test_inputs.reshape(-1, 28 * 28)
+
+    train_inputs = train_inputs / 255.0
+    test_inputs = test_inputs / 255.0
+
+    train_inputs = Tensor(train_inputs)
+    train_labels = Tensor(train_labels)
+    test_inputs = Tensor(test_inputs)
+    test_labels = Tensor(test_labels)
+
+    return train_inputs, train_labels, test_inputs, test_labels
 

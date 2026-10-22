@@ -31,7 +31,8 @@ class GradientTape:
 
         ### TODO: Populate the grads dictionary with {weight_id, weight_gradient} pairs and return the gradients of the sources
 
-        queue = [target]                    ## Live queue; will be used to propagate backwards via breadth-first-search.
+        # queue = [target]                    ## Live queue; will be used to propagate backwards via breadth-first-search.
+        queue = [(target, None)]
         grads = defaultdict(lambda: None)   ## Grads to be recorded. Initialize to None. Note: stores {id: list[gradients]}
         # Use id(tensor) to get the object id of a tensor object.
         # in the end, your grads dictionary should have the following structure:
@@ -39,3 +40,52 @@ class GradientTape:
 
         # What tensor and what gradient is for you to implement!
         # compose_input_gradients and compose_weight_gradients are methods that will be helpful
+
+        while queue:
+            tensor, upstream_grad = queue.pop(0)
+            layer = self.previous_layers[id(tensor)]
+
+            if layer is None:
+                continue
+
+            input_grads = layer.compose_input_gradients([upstream_grad])
+            weight_grads = layer.compose_weight_gradients([upstream_grad])
+
+            for i in range(len(layer.weights)):
+                weight = layer.weights[i]
+                weight_id = id(weight)
+
+                if grads[weight_id] is None:
+                    grads[weight_id] = []
+
+                grads[weight_id].append(weight_grads[i])
+
+            for i in range(len(layer.inputs)):
+                inp = layer.inputs[i]
+                input_id = id(inp)
+
+                if grads[input_id] is None:
+                    grads[input_id] = []
+
+                grads[input_id].append(input_grads[i])
+
+                if self.previous_layers[input_id] is not None:
+                    queue.append((inp, input_grads[i]))
+
+        result = []
+
+        for source in sources:
+            source_grads = grads[id(source)]
+
+            if source_grads is None:
+                result.append(None)
+                continue
+
+            total_grad = source_grads[0]
+
+            for i in range(1, len(source_grads)):
+                total_grad = total_grad + source_grads[i]
+
+            result.append(Tensor(total_grad))
+
+        return result

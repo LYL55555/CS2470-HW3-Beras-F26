@@ -18,13 +18,18 @@ class Dense(Diffable):
         """
         Forward pass for a dense layer! Refer to lecture slides for how this is computed.
         """
-        return NotImplementedError
+        return Tensor(x @ self.w + self.b)
 
     def get_input_gradients(self) -> list[Tensor]:
-        return NotImplementedError
+        return [self.w]
 
     def get_weight_gradients(self) -> list[Tensor]:
-        return NotImplementedError
+        x = self.inputs[0]
+
+        w_grad = Tensor(np.expand_dims(x, axis=-1))
+        b_grad = Tensor(np.ones_like(self.b))
+
+        return [w_grad, b_grad]
 
     @staticmethod
     def _initialize_weight(initializer, input_size, output_size) -> tuple[Variable, Variable]:
@@ -45,12 +50,20 @@ class Dense(Diffable):
             with ReLU activation.
         """
 
-        initializer = initializer.lower()
-        assert initializer in (
-            "zero",
-            "normal",
-            "xavier",
-            "kaiming",
-        ), f"Unknown dense weight initialization strategy '{initializer}' requested"
+        if initializer == "zero":
+            w = np.zeros((input_size, output_size))
 
-        return None, None
+        elif initializer == "normal":
+            w = np.random.normal(0, 1, (input_size, output_size))
+
+        elif initializer == "xavier":
+            std = np.sqrt(2 / (input_size + output_size))
+            w = np.random.normal(0, std, (input_size, output_size))
+
+        elif initializer == "kaiming":
+            std = np.sqrt(2 / input_size)
+            w = np.random.normal(0, std, (input_size, output_size))
+
+        b = np.zeros(output_size)
+
+        return Variable(w), Variable(b)

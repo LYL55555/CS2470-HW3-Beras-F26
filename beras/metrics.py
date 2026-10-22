@@ -8,4 +8,10 @@ class CategoricalAccuracy(Callable):
         ## TODO: Compute and return the categorical accuracy of your model 
         ## given the output probabilities and true labels. 
         ## HINT: Argmax + boolean mask via '=='
-        return NotImplementedError
+        pred_labels = np.argmax(probs, axis=1)
+        true_labels = np.argmax(labels, axis=1)
+
+        correct = pred_labels == true_labels
+        accuracy = np.mean(correct)
+
+        return accuracy
