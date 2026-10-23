@@ -26,7 +26,7 @@ class Dense(Diffable):
     def get_weight_gradients(self) -> list[Tensor]:
         x = self.inputs[0]
 
-        w_grad = Tensor(np.expand_dims(x, axis=-1))
+        w_grad = Tensor(np.repeat(np.expand_dims(x, axis=-1), self.w.shape[1], axis=-1))
         b_grad = Tensor(np.ones_like(self.b))
 
         return [w_grad, b_grad]

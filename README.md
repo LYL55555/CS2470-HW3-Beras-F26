@@ -1,40 +1,30 @@
-# CSCI 2470 HW3 — Beras
+# CSCI 2470 HW3
 
-## Overview
+Beras implemented with Python and NumPy for MNIST classification.
 
-Implemented Beras, a simple neural network framework using NumPy, including dense layers, activation functions, loss functions, optimizers, and automatic differentiation.
+## model
 
-The framework is used to train an MLP for MNIST handwritten digit classification.
+- layers: 784, 256, 128, 10
+- hidden activation: ReLU
+- output activation: Softmax
+- initialization: Kaiming for hidden layers, Xavier for output
+- optimizer: Adam, learning rate 0.001
+- loss: categorical cross entropy
+- batch size: 64
+- epochs: 10
 
-## Model Configuration
-
-- Architecture: 784 → 256 → 128 → 10
-- Hidden activation: ReLU
-- Output activation: Softmax
-- Initialization: Kaiming for hidden layers, Xavier for output
-- Optimizer: Adam (learning rate = 0.001)
-- Loss: Categorical Cross-Entropy
-- Batch size: 64
-- Epochs: 10
-- Random seed: 42
-
-## Running
-
-Activate the course environment and run:
+## run
 
 ```bash
 conda activate csci2470
 python assignment.py
 ```
 
-This trains and evaluates the model on MNIST and saves the test predictions to `predictions.npy`.
+This trains the model and saves a new predictions.npy.
 
-## Results
+## results
 
-| Metric | Value |
-|---|---|
-| Training Accuracy | 99.49% |
-| Test Accuracy | 97.90% |
-| Test Loss | 0.0955 |
-
-The model achieved the target test accuracy of 97% within 10 epochs.
+- local training accuracy: 99.49%
+- local test accuracy: 97.90%
+- local test loss: 0.0955
+- predictions.npy shape: (10000,)

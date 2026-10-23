@@ -88,11 +88,7 @@ class Weighted(ABC):
     @property
     def trainable(self) -> bool:
         """Returns true if any of the weights are trainable"""
-        non_trainable_vars = []
-        for weight in self.weights:
-            if not weight.trainable:
-                non_trainable_vars.append(weight)
-        return non_trainable_vars
+        return any(weight.trainable for weight in self.weights)
 
     @trainable.setter
     def trainable(self, trainable: bool):
